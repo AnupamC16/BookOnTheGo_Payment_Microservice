@@ -10,6 +10,11 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import com.example.payment.dto.NotificationDTO;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -17,14 +22,20 @@ public class PaymentServiceImpl implements PaymentService {
         private final String stripeSecretKey;
         private final String currency;
         private final TransactionRepository transactionRepository;
+        private final RestTemplate restTemplate;
+
+        @Value("${notification.service.url}")
+        private String notificationServiceUrl;
 
         public PaymentServiceImpl(
                         @Value("${stripe.secret-key}") String stripeSecretKey,
                         @Value("${stripe.currency}") String currency,
-                        TransactionRepository transactionRepository) {
+                        TransactionRepository transactionRepository,
+                        RestTemplate restTemplate) {
                 this.stripeSecretKey = stripeSecretKey;
                 this.currency = currency;
                 this.transactionRepository = transactionRepository;
+                this.restTemplate = restTemplate;
                 Stripe.apiKey = this.stripeSecretKey;
         }
 
@@ -47,6 +58,10 @@ public class PaymentServiceImpl implements PaymentService {
 
                 saveTransaction(intent, request);
 
+                if ("succeeded".equals(intent.getStatus())) {
+                        sendNotificationToNotifyService(request); // Notify via REST
+                }
+
                 PaymentResponse response = new PaymentResponse();
                 response.setStatus(intent.getStatus());
 
@@ -62,4 +77,24 @@ public class PaymentServiceImpl implements PaymentService {
                 txn.setStatus(intent.getStatus());
                 transactionRepository.save(txn);
         }
+
+         private void sendNotificationToNotifyService(PaymentRequest request) {
+        NotificationDTO dto = NotificationDTO.builder()
+                .bookingId(request.getBookingId())
+                .attendeeName(request.getAttendeeName())
+                .userEmail(request.getUserEmail())
+                .eventName(request.getEventName())
+                .eventDate(request.getEventDate())
+                .eventTime(request.getEventTime())
+                .venue(request.getVenue())
+                .eventId(request.getEventId())
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<NotificationDTO> entity = new HttpEntity<>(dto, headers);
+
+        restTemplate.postForEntity(notificationServiceUrl + "/notify/payment-success", entity, String.class);
+        restTemplate.postForEntity(notificationServiceUrl + "/notify/booking", entity, String.class);
+    }
 }
