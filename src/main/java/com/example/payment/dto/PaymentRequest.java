@@ -3,8 +3,15 @@ package com.example.payment.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PaymentRequest {
+
     @NotNull
     @Min(1)
     private Long amount;
@@ -12,19 +19,27 @@ public class PaymentRequest {
     @NotBlank
     private String paymentMethodId;
 
-    public Long getAmount() {
-        return amount;
-    }
+    @NotBlank
+    private String userEmail;
 
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
+    @NotBlank
+    private String bookingId;
 
-    public String getPaymentMethodId() {
-        return paymentMethodId;
-    }
+    @NotBlank
+    private String attendeeName;
 
-    public void setPaymentMethodId(String paymentMethodId) {
-        this.paymentMethodId = paymentMethodId;
-    }
+    @NotBlank
+    private String eventName;
+
+    @NotBlank
+    private String eventDate;
+
+    @NotBlank
+    private String eventTime;
+
+    @NotBlank
+    private String venue;
+
+    @NotBlank
+    private String eventId;
 }
