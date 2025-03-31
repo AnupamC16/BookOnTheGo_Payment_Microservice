@@ -29,9 +29,4 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
-
-    @GetMapping("/health")
-    public ResponseEntity<String> healthCheck() {
-        return ResponseEntity.ok("Hello, World! Payment service is running.");
-    }
 }

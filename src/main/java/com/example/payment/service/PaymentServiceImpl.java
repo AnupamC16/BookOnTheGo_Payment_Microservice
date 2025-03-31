@@ -41,7 +41,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         @Override
         public PaymentResponse processPayment(PaymentRequest request) throws StripeException {
-                System.out.println("Started");
                 PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                                 .setAmount(request.getAmount() * 100L)
                                 .setCurrency(this.currency)
@@ -55,21 +54,13 @@ public class PaymentServiceImpl implements PaymentService {
                                                                 .build())
                                 .build();
 
-                System.out.println("Checking if params created or not");
-
                 PaymentIntent intent = PaymentIntent.create(params);
-
-                System.out.println("Checking if intent created or not");
 
                 saveTransaction(intent, request);
 
-                System.out.println("Checking if db saved or not");
-
-                // if ("succeeded".equals(intent.getStatus())) {
-                // sendNotificationToNotifyService(request); // Notify via REST
-                // } else {
-                // System.out.println("Checking if notification worked or not");
-                // }
+                if ("succeeded".equals(intent.getStatus())) {
+                        sendNotificationToNotifyService(request); // Notify via REST
+                }
 
                 PaymentResponse response = new PaymentResponse();
                 response.setStatus(intent.getStatus());
