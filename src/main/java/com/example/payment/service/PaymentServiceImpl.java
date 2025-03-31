@@ -58,9 +58,9 @@ public class PaymentServiceImpl implements PaymentService {
 
                 saveTransaction(intent, request);
 
-                if ("succeeded".equals(intent.getStatus())) {
-                        sendNotificationToNotifyService(request); // Notify via REST
-                }
+                // if ("succeeded".equals(intent.getStatus())) {
+                // sendNotificationToNotifyService(request); // Notify via REST
+                // }
 
                 PaymentResponse response = new PaymentResponse();
                 response.setStatus(intent.getStatus());
