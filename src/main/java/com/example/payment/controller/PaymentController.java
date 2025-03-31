@@ -3,7 +3,6 @@ package com.example.payment.controller;
 import com.example.payment.dto.PaymentRequest;
 import com.example.payment.dto.PaymentResponse;
 import com.example.payment.service.PaymentService;
-import com.example.payment.service.PaymentServiceImpl;
 import com.stripe.exception.StripeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentController {
+
     private final PaymentService paymentService;
 
     public PaymentController(PaymentService paymentService) {
@@ -28,5 +28,10 @@ public class PaymentController {
             errorResponse.setStatus(e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
         }
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Hello, World! Payment service is running.");
     }
 }
