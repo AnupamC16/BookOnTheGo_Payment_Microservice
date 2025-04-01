@@ -21,9 +21,7 @@ public class PaymentController {
     @PostMapping("/process")
     public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest request) {
         try {
-            System.out.println("API Started");
             PaymentResponse response = paymentService.processPayment(request);
-            System.out.println("Got Response");
             return ResponseEntity.ok(response);
         } catch (StripeException e) {
             PaymentResponse errorResponse = new PaymentResponse();
