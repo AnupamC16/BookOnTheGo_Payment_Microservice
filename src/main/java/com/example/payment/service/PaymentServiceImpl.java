@@ -78,17 +78,16 @@ public class PaymentServiceImpl implements PaymentService {
                 transactionRepository.save(txn);
         }
 
-        private void sendNotificationToNotifyService(PaymentRequest request) {
-                NotificationDTO dto = NotificationDTO.builder()
-                                .bookingId(request.getBookingId())
-                                .attendeeName(request.getAttendeeName())
-                                .userEmail(request.getUserEmail())
-                                .eventName(request.getEventName())
-                                .eventDate(request.getEventDate())
-                                .eventTime(request.getEventTime())
-                                .venue(request.getVenue())
-                                .eventId(request.getEventId())
-                                .build();
+
+         private void sendNotificationToNotifyService(PaymentRequest request) {
+        NotificationDTO dto = NotificationDTO.builder()
+                .bookingId(request.getBookingId())
+                .userEmail(request.getUserEmail())
+                .eventName(request.getEventName())
+                .eventDate(request.getEventDate())
+                .eventTime(request.getEventTime())
+                .venue(request.getVenue())
+                .build();
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
