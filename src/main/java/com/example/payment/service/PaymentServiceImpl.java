@@ -84,13 +84,11 @@ public class PaymentServiceImpl implements PaymentService {
          private void sendNotificationToNotifyService(PaymentRequest request) {
         NotificationDTO dto = NotificationDTO.builder()
                 .bookingId(request.getBookingId())
-                .attendeeName(request.getAttendeeName())
                 .userEmail(request.getUserEmail())
                 .eventName(request.getEventName())
                 .eventDate(request.getEventDate())
                 .eventTime(request.getEventTime())
                 .venue(request.getVenue())
-                .eventId(request.getEventId())
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
