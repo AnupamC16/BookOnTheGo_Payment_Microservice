@@ -41,7 +41,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         @Override
         public PaymentResponse processPayment(PaymentRequest request) throws StripeException {
-                System.out.println("Creating Params Object");
                 PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                                 .setAmount(request.getAmount() * 100L)
                                 .setCurrency(this.currency)
@@ -55,9 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
                                                                 .build())
                                 .build();
 
-                System.out.println("Before Calling Stripe");
                 PaymentIntent intent = PaymentIntent.create(params);
-                System.out.println("After calling stripe and saving in db");
 
                 saveTransaction(intent, request);
 
@@ -81,21 +78,23 @@ public class PaymentServiceImpl implements PaymentService {
                 transactionRepository.save(txn);
         }
 
-         private void sendNotificationToNotifyService(PaymentRequest request) {
-        NotificationDTO dto = NotificationDTO.builder()
-                .bookingId(request.getBookingId())
-                .userEmail(request.getUserEmail())
-                .eventName(request.getEventName())
-                .eventDate(request.getEventDate())
-                .eventTime(request.getEventTime())
-                .venue(request.getVenue())
-                .build();
+        private void sendNotificationToNotifyService(PaymentRequest request) {
+                NotificationDTO dto = NotificationDTO.builder()
+                                .bookingId(request.getBookingId())
+                                .attendeeName(request.getAttendeeName())
+                                .userEmail(request.getUserEmail())
+                                .eventName(request.getEventName())
+                                .eventDate(request.getEventDate())
+                                .eventTime(request.getEventTime())
+                                .venue(request.getVenue())
+                                .eventId(request.getEventId())
+                                .build();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<NotificationDTO> entity = new HttpEntity<>(dto, headers);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity<NotificationDTO> entity = new HttpEntity<>(dto, headers);
 
-        restTemplate.postForEntity(notificationServiceUrl + "/payment-success", entity, String.class);
-        restTemplate.postForEntity(notificationServiceUrl + "/booking", entity, String.class);
-    }
+                restTemplate.postForEntity(notificationServiceUrl + "/payment-success", entity, String.class);
+                restTemplate.postForEntity(notificationServiceUrl + "/booking", entity, String.class);
+        }
 }
