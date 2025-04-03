@@ -25,8 +25,6 @@ public class PaymentRequest {
     @NotBlank
     private String bookingId;
 
-    @NotBlank
-    private String attendeeName;
 
     @NotBlank
     private String eventName;
@@ -37,9 +35,5 @@ public class PaymentRequest {
     @NotBlank
     private String eventTime;
 
-    @NotBlank
     private String venue;
-
-    @NotBlank
-    private String eventId;
 }

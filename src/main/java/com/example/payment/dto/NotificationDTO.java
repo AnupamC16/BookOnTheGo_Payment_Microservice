@@ -9,7 +9,6 @@ import lombok.*;
 @Builder
 public class NotificationDTO {
     private String userEmail;
-    private String attendeeName;
     private String eventName;
     private String eventDate;
     private String eventTime;
